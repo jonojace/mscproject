@@ -12,7 +12,7 @@ from helpers import process_transcript, resample
 if len(sys.argv) != 3:
     print("################################")
     print("AVEC2012_clean_for_merlin usage:")
-    print("python AVEC2012_clean_for_merlin.py <AVEC2012 main folder> <output folder>")
+    print("python create_emotion_label_files.py <AVEC2012 main folder> <output folder>")
     print("################################")
     raise Exception
 

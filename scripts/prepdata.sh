@@ -29,8 +29,8 @@ FRESH_EXAMPLE_DIR=${MSCPROJECT_DIR}/merlin-master/egs/build_your_own_voice #fres
 
 CLEANED_DATA_DIR=${SCRATCH_DIR}/AVEC2012_clean_for_merlin
 
-MIN_WAV_FILE_SIZE=50000 #in bytes
-VAL_AND_TEST_SIZE=25 #does this greatly affect DNN training quality?
+MIN_WAV_FILE_SIZE=100000 #in bytes
+VAL_AND_TEST_PERCENT=10 #does this greatly affect DNN training quality?
 SAMPLING_FREQUENCY=48000
 
 #source the conda environment
@@ -49,11 +49,13 @@ fi
 cp -r ${FRESH_EXAMPLE_DIR} ${EXAMPLE_DIR}
 
 #copy over edited files
+echo copying ${COPY_OVER_DIR}/questions-radio_dnn_416.hed to ${MERLIN_DIR}/misc/questions
 cp ${COPY_OVER_DIR}/questions-radio_dnn_416.hed ${MERLIN_DIR}/misc/questions #questions file
-cp ${COPY_OVER_DIR}/prepare_config_files.sh ${EXAMPLE_DIR}/s1/scripts #${MERLIN_DIR} # merlin/egs/build_your_own_voice/s1/scripts/prepare_config_files.sh , you added a line for additional features
-cp ${COPY_OVER_DIR}/prepare_config_files_for_synthesis.sh ${EXAMPLE_DIR}/s1/scripts
-cp ${COPY_OVER_DIR}/duration_demo.conf ${MERLIN_DIR}/misc/recipes # merlin/misc/recipes/duration_demo.conf #you added additional_features = None
-cp ${COPY_OVER_DIR}/acoustic_demo.conf ${MERLIN_DIR}/misc/recipes # merlin/misc/recipes/acoustic_demo.conf #you added additional_features = None
+#BELOW ARE ONLY NEEDED IF U WANT TO USE CONTINUOUS LABELS AS SRIKANTH DETAILED
+# cp ${COPY_OVER_DIR}/prepare_config_files.sh ${EXAMPLE_DIR}/s1/scripts #${MERLIN_DIR} # merlin/egs/build_your_own_voice/s1/scripts/prepare_config_files.sh , you added a line for additional features
+# cp ${COPY_OVER_DIR}/prepare_config_files_for_synthesis.sh ${EXAMPLE_DIR}/s1/scripts
+# cp ${COPY_OVER_DIR}/duration_demo.conf ${MERLIN_DIR}/misc/recipes # merlin/misc/recipes/duration_demo.conf #you added additional_features = None
+# cp ${COPY_OVER_DIR}/acoustic_demo.conf ${MERLIN_DIR}/misc/recipes # merlin/misc/recipes/acoustic_demo.conf #you added additional_features = None
 
 #cd into the correct directory for running the merlin step by step scripts
 cd ${EXAMPLE_DIR}/s1
@@ -97,10 +99,13 @@ cp -r ${CLEANED_DATA_DIR}/txt ${EXAMPLE_DIR}/s1/database
 #in ${MSCPROJECT_DIR}/sentence_continuous_emotion_labels/
 #IF we need to.
 
-#copy in emotion labels
-mkdir -p ${EXAMPLE_DIR}/s1/database/feats
-python ${SCRIPT_DIR}/create_emotion_label_files.py ${AVEC2012_DIR} ${SCRATCH_DIR}/sentence_continuous_emotion_labels/
-cp -r ${SCRATCH_DIR}/sentence_continuous_emotion_labels/* ${EXAMPLE_DIR}/s1/database/feats
+#NB following code not in use as we are now not using fully continuous emotion labels, just state level
+# #deal with continuous emotion labels
+# mkdir -p ${EXAMPLE_DIR}/s1/database/feats #create location to store continuous emotion labels
+# #create continuous emotion labels
+# python ${SCRIPT_DIR}/create_emotion_label_files.py ${AVEC2012_DIR} ${SCRATCH_DIR}/sentence_continuous_emotion_labels/
+# #move continuous emotion labels to the correct folder
+# cp -r ${SCRATCH_DIR}/sentence_continuous_emotion_labels/* ${EXAMPLE_DIR}/s1/database/feats
 
 #get number of utterances created (info needed for config file)
 #$(.) is used to store results of command in variable
@@ -108,6 +113,7 @@ cp -r ${SCRATCH_DIR}/sentence_continuous_emotion_labels/* ${EXAMPLE_DIR}/s1/data
 num_utts=$(ls -1q ${EXAMPLE_DIR}/s1/database/wav | wc -l) #total number of files
 
 #modify config file with appropriate settings for your data
+VAL_AND_TEST_SIZE=$(($num_utts*$VAL_AND_TEST_PERCENT/100))
 train_size=$(expr $num_utts - $VAL_AND_TEST_SIZE - $VAL_AND_TEST_SIZE) #expr is bash's way of doing math
 val_size=$VAL_AND_TEST_SIZE
 test_size=$VAL_AND_TEST_SIZE
@@ -126,6 +132,7 @@ mkdir -p database/labels/label_state_align
 
 #since we may not be able to align properly for all the data, we need to update the number of utterances
 num_utts=$(ls -1q ${EXAMPLE_DIR}/s1/database/labels/label_state_align | wc -l) #number of files that successfully get state alignments
+VAL_AND_TEST_SIZE=$(($num_utts*$VAL_AND_TEST_PERCENT/100))
 train_size=$(expr $num_utts - $VAL_AND_TEST_SIZE - $VAL_AND_TEST_SIZE) #expr is bash's way of doing math
 val_size=$VAL_AND_TEST_SIZE
 test_size=$VAL_AND_TEST_SIZE
@@ -134,8 +141,9 @@ sed -i "s/Train=\([0-9]\+\)/Train=${train_size}/g" ${EXAMPLE_DIR}/s1/conf/global
 sed -i "s/Valid=\([0-9]\+\)/Valid=${val_size}/g" ${EXAMPLE_DIR}/s1/conf/global_settings.cfg
 sed -i "s/Test=\([0-9]\+\)/Test=${test_size}/g" ${EXAMPLE_DIR}/s1/conf/global_settings.cfg
 
-#add speaker id labels
-python ${SCRIPT_DIR}/appendSpeakerIDToLabels.py ${EXAMPLE_DIR}
+#add speaker and emotion id labels
+#add emotion id labels (state level emotion labels after meeting with oliver on wed 27th june)
+python ${SCRIPT_DIR}/appendSpeakerAndEmotionIDToLabels.py ${EXAMPLE_DIR} ${AVEC2012_DIR}
 #do not need to add the addQuestions script here, as the questions file is located within the merlin dir, not specific to each experiment
 
 # step 3: extract acoustic features
@@ -144,5 +152,6 @@ python ${SCRIPT_DIR}/appendSpeakerIDToLabels.py ${EXAMPLE_DIR}
 # step 4: prepare config files for training and testing
 ./04_prepare_conf_files.sh conf/global_settings.cfg
 
-#copy over emotion labels to the experiments/avec2012/duration_model/data directory (they already get copied over to the acoustic one for some reason)
-cp -r ${SCRATCH_DIR}/sentence_continuous_emotion_labels/* ${EXAMPLE_DIR}/s1/experiments/avec2012/duration_model/data
+#BELOW only needed if using continuous emotion labels I think
+# #copy over emotion labels to the experiments/avec2012/duration_model/data directory (they already get copied over to the acoustic one for some reason)
+# cp -r ${SCRATCH_DIR}/sentence_continuous_emotion_labels/* ${EXAMPLE_DIR}/s1/experiments/avec2012/duration_model/data

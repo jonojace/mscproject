@@ -434,3 +434,7 @@ QS "Speaker_ID==17"    {/K:17}
 QS "Speaker_ID==18"    {/K:18}
 QS "Speaker_ID==19"    {/K:19}
 QS "Speaker_ID==20"    {/K:20}
+CQS "arousal"    {/L:([-+.\d]+)}
+CQS "expectancy"    {/M:([-+.\d]+)}
+CQS "power"    {/N:([-+.\d]+)}
+CQS "valence"    {/O:([-+.\d]+)}

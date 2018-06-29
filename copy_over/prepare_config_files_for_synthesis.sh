@@ -47,7 +47,9 @@ $SED -i s#"silence_pattern:.*"#"silence_pattern: ['*-"${SilencePhone}"+*']"# $du
 $SED -i s#'label_type:.*'#'label_type: '${Labels}# $duration_config_file
 $SED -i s#'label_align\s*:.*'#'label_align: %(TOPLEVEL)s/experiments/'${Voice}'/test_synthesis/prompt-lab'# $duration_config_file
 $SED -i s#'question_file_name\s*:.*'#'question_file_name: %(Merlin)s/misc/questions/'${QuestionFile}# $duration_config_file
-$SED -i s#'additional_features:.*'#'additional_features: arousal=1, expectancy=1, power=1, valence=1'# $duration_config_file
+#NB commented out additional features as we can't use emotion labels with the duration model if we need the duration model to create
+#emotion labels of the correct length for the acoustic model
+# $SED -i s#'additional_features:.*'#'additional_features: arousal=1, expectancy=1, power=1, valence=1'# $duration_config_file
 
 
 # [Outputs]
