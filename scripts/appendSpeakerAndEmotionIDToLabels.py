@@ -6,8 +6,10 @@ import math
 import numpy as np
 
 '''
-Appends speaker IDs to HTS formatted labels
-Also adds appropriate questions to the questions file
+Appends speaker+emotion IDs to HTS formatted label
+Doesn't append emotion IDs to lab files for leslie simms data
+
+If you want to ignore the emotion ids just don't add those questions to the questions file
 '''
 
 #check for correct number of args
@@ -26,6 +28,8 @@ LABEL_DIR = AVEC2012_DIR + '/emotion labels/{}/FC_{}_labels/' #directory where e
 TRANSCRIPT_DIR = AVEC2012_DIR + '/transcripts/original/{}/'
 TIME_DIVISOR = 10000000 #divide the timestamp in HTS label files by this to get to seconds
 VIDEO_FRAMERATE = 49.979 #merlin is 1 frame every 5ms
+
+SENT_AVG_OUTPUT_FOLDER = '/afs/inf.ed.ac.uk/user/s17/s1785140/analysis_mscproject/sent_emotion_avg'
 
 #NB REMEMBER TO RSYNC OVER THE QUESTIONS FILE FROM DICE MACHINE TO MLP OR EDDIE CLUSTER
 
@@ -67,21 +71,21 @@ def get_speaker_id(dataset, audio_file_num):
             raise LookupError('Tried to use an audio file which is not associated with a speaker ID. Please check that you are using the correct audio files.')
     elif dataset == 'tests':
         if audio_file_num in range(1,5):
-            return 1
+            return 13
         elif audio_file_num in range(5,8):
-            return 2
+            return 14
         elif audio_file_num in range(8,12):
-            return 7
+            return 15
         elif audio_file_num in range(12,16):
-            return 8
+            return 16
         elif audio_file_num in range(16,20):
-            return 9
+            return 17
         elif audio_file_num in range(20,25):
-            return 10
+            return 18
         elif audio_file_num in range(25,29):
-            return 11
+            return 19
         elif audio_file_num in range(29,33):
-            return 12
+            return 20
         else:
             raise LookupError('Tried to use an audio file which is not associated with a speaker ID. Please check that you are using the correct audio files.')
     else:
@@ -101,7 +105,7 @@ for lf in label_files:
     s_id = get_speaker_id(dataset, audio_file_num)
 
     #create HTS style answer for speaker ID question
-    s_id_label = '/K:' + str(s_id)
+    s_id_label = '/K:' + str(s_id) + '=' #note that = is so that we don't match /K:1 when we hav /K:10 or /K:11 etc
 
     #make transcript file name
     tf = dataset + '_transcript' + str(audio_file_num).zfill(3) + '.txt'
@@ -151,7 +155,7 @@ for lf in label_files:
     modified_output = [] #holds the modified lines inc. emotion/speajer id which will be used to overwrite the label file
 
     #each line is a state-time alignment
-    for line in label_data:
+    for line_idx, line in enumerate(label_data):
         #get the start and end value for the state
         state_start, state_end = re.findall('^(\d+) (\d+)', line)[0]
 
@@ -171,16 +175,22 @@ for lf in label_files:
         state_start = math.floor(VIDEO_FRAMERATE * state_start)
         state_end = math.ceil(VIDEO_FRAMERATE * state_end)
 
-
         to_add_to_lab_line = s_id_label #we add the emotion labels onto the end of this
+
+        #NB this is for getting average emotion value over the entire sentence
+        if line_idx == 0:
+            sent_start = state_start
+        if line_idx == len(label_data)-1:
+            sent_end = state_end
 
         #get the lines from the emotion files corresponding to these time stamps
         for emotion, data in emotion_data.items():
+            # print('XXX', emotion.keys())
             #get the continuous emotion arcs corresponding to start and end timestamps
-            l = [float(val) for val in data[state_start:state_end]] #TODO state_start and end_start aren't inside the data
+            state_values = [float(val) for val in data[state_start:state_end]] #TODO state_start and end_start aren't inside the data
 
             #for each emotion, get the average value for the duration of the state
-            avg = np.mean(l)
+            state_avg = np.mean(state_values)
 
             # if rv == 0:
             #     print(state_start, state_end, len(data), line, emotion, l, rv, data[:10],'\n')
@@ -191,7 +201,7 @@ for lf in label_files:
             if emotion == 'power': letter = 'N'
             if emotion == 'valence': letter = 'O'
 
-            to_add_to_lab_line = to_add_to_lab_line + '/' + letter + ':' + str(avg)
+            to_add_to_lab_line = to_add_to_lab_line + '/' + letter + ':' + str(state_avg)
 
         # print(to_add_to_lab_line)
 
@@ -203,3 +213,12 @@ for lf in label_files:
     #overwrite the file with the new lines in the label file that now include a speaker id
     with open(LABEL_FOLDER + lf, 'w') as f:
         f.write(''.join(modified_output))
+
+    #get the sentence-level emotion value for oliver watts model using sent_start and sent_end
+    to_write = ''
+    for emotion, data in emotion_data.items():
+        sent_values = [float(val) for val in data[sent_start:sent_end]]
+        sent_avg = np.mean(sent_values)
+        to_write += emotion + ':' + str(sent_avg) + ' '
+    with open(SENT_AVG_OUTPUT_FOLDER + '/' + lf.rstrip('.lab') + '.avg', 'w') as f:
+        f.write(to_write)

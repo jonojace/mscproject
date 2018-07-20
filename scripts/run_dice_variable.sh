@@ -1,5 +1,7 @@
 #!/bin/bash -e
 
+#NB this variable script is for when u want to vary the emotion values over the duration of each utt
+
 #paths appropriate for dice
 # BUILD_YOUR_OWN_VOICE_DIR=/afs/inf.ed.ac.uk/user/s17/s1785140/merlin/egs/build_your_own_voice #this directory is running out of space
 BUILD_YOUR_OWN_VOICE_DIR=/group/project/cstr1/mscslp/2017-18/s1785140_Jason_Fong/merlin/egs/build_your_own_voice
@@ -13,9 +15,13 @@ VOICE_NAME=avec2012
 #Additional features when synthesising
 SPEAKER_ID_TO_GENERATE=$2
 AROUSAL=$3
-EXPECTANCY=$4
-POWER=$5
-VALENCE=$6
+TO_AROUSAL=$4
+EXPECTANCY=$5
+TO_EXPECTANCY=$6
+POWER=$7
+TO_POWER=$8
+VALENCE=$9
+TO_VALENCE=${10}
 
 if test "$#" -lt 1; then
     echo "################################"
@@ -50,5 +56,6 @@ fi
 
 #use trained models to synthesise speech
 if [ "$synth" = true ]; then
-  ./synthesise.sh $BUILD_YOUR_OWN_VOICE_DIR $MSCPROJECT_DIR $VOICE_NAME $SPEAKER_ID_TO_GENERATE $AROUSAL $EXPECTANCY $POWER $VALENCE
+
+  ./synthesise_variable.sh $BUILD_YOUR_OWN_VOICE_DIR $MSCPROJECT_DIR $VOICE_NAME $SPEAKER_ID_TO_GENERATE ${AROUSAL} ${TO_AROUSAL} ${EXPECTANCY} ${TO_EXPECTANCY} ${POWER} ${TO_POWER} ${VALENCE} ${TO_VALENCE}
 fi

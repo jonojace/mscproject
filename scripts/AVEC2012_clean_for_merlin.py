@@ -34,11 +34,11 @@ WAV_FOLDER = 'recordings/dialogues/'
 
 inner_folders = ['train/'] # folders to explore inside INPUT_FOLDER
 
-inner_folders = [
-    'train/',
-    'devel/', #NB WARNING You need to exclude broken dialogues for devel and test in the same way you did for train
-    'test/'
-]
+# inner_folders = [
+#     'train/',
+#     'devel/', #NB WARNING You need to exclude broken dialogues for devel and test in the same way you did for train
+#     'test/'
+# ]
 
 #optionally control how much data you want to convert, rather than converting all of the data in the folder
 INCLUDE_LIST = None #takes all the data from the folder
@@ -100,24 +100,24 @@ EXCLUDE_LIST = [
 ]
 
 SENT_EXCLUDE_LIST = [
-    'devel_audio023_sent62',
-    'tests_audio011_sent17',
-    'tests_audio011_sent18',
-    'tests_audio011_sent19',
-    'tests_audio011_sent20',
-    'tests_audio011_sent21',
-    'tests_audio011_sent22',
-    'tests_audio011_sent23',
-    'tests_audio011_sent24',
-    'tests_audio011_sent25',
-    'tests_audio011_sent26',
-    'tests_audio011_sent27',
-    'tests_audio011_sent28',
-    'tests_audio011_sent29',
-    'tests_audio011_sent30',
-    'tests_audio011_sent31',
-    'tests_audio011_sent32',
-    'tests_audio011_sent33'
+    'devel_audio023_sent062',
+    'tests_audio011_sent017',
+    'tests_audio011_sent018',
+    'tests_audio011_sent019',
+    'tests_audio011_sent020',
+    'tests_audio011_sent021',
+    'tests_audio011_sent022',
+    'tests_audio011_sent023',
+    'tests_audio011_sent024',
+    'tests_audio011_sent025',
+    'tests_audio011_sent026',
+    'tests_audio011_sent027',
+    'tests_audio011_sent028',
+    'tests_audio011_sent029',
+    'tests_audio011_sent030',
+    'tests_audio011_sent031',
+    'tests_audio011_sent032',
+    'tests_audio011_sent033'
 ]
 
 #NB using wait() ensures that the rest of the python code waits for the commands
@@ -163,7 +163,7 @@ for inner_folder in inner_folders:
             end = str(datetime.timedelta(seconds=timestamps[1]))
 
             file_name = wav_file[:-4] #get rid of .wav extension
-            file_name = file_name + '_sent{}'.format(i)
+            file_name = file_name + '_sent{}'.format(str(i).zfill(3))
 
             #if a filename is in the exclude sent list, then continue this for loop
             if file_name in SENT_EXCLUDE_LIST:
@@ -178,7 +178,7 @@ for inner_folder in inner_folders:
                     os.remove(OUTPUT_FOLDER + 'wav/' + file_name + '.wav')
                     #delete wav file
                 else:
-                    with open(OUTPUT_FOLDER + 'txt/' + file_name + '_16bit' + '.txt', 'w') as f:
+                    with open(OUTPUT_FOLDER + 'txt/' + file_name + '.txt', 'w') as f:
                         f.write(' '.join(sentence))
 
             i = i + 1

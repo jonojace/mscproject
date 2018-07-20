@@ -43,7 +43,6 @@ rm -rf experiments/${VOICE_NAME}/test_synthesis/prompt-lab/*
 rm -f experiments/${VOICE_NAME}/test_synthesis/prompt-utt/*
 rm -f experiments/${VOICE_NAME}/test_synthesis/gen-lab/*
 
-
 #copy over the files you wish to generate now
 cp -r ${TEXT_TO_GENERATE_FOLDER}/. experiments/${VOICE_NAME}/test_synthesis/txt/
 
@@ -78,8 +77,8 @@ echo "preparing full-contextual labels using Festival frontend..."
 lab_dir=$(dirname $inp_txt)
 ./scripts/prepare_labels_from_txt.sh $inp_txt $lab_dir $global_config_file
 
-echo "appending features to labels..."
-python ${SCRIPT_DIR}/appendSpeakerIDToLabels_TestTime.py ${EXAMPLE_DIR} ${SPEAKER_ID_TO_GENERATE} ${AROUSAL} ${EXPECTANCY} ${POWER} ${VALENCE}
+# echo "appending features to labels..."
+# python ${SCRIPT_DIR}/appendSpeakerIDToLabels_TestTime.py ${EXAMPLE_DIR} ${SPEAKER_ID_TO_GENERATE} ${AROUSAL} ${EXPECTANCY} ${POWER} ${VALENCE}
 
 echo "synthesizing durations..."
 ./scripts/submit.sh ${MerlinDir}/src/run_merlin.py $test_dur_config_file

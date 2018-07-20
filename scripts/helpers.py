@@ -9,6 +9,9 @@ from scipy.interpolate import interp1d
 
 #resamples the data from in_framerate to out_framerate
 def resample(data, in_framerate, out_framerate):
+    '''
+    adjusts data that is at in_framerate so that it is at out_framerate
+    '''
     in_num_samples = len(data)
     out_num_samples = int(in_num_samples * (out_framerate / in_framerate))
 
@@ -18,6 +21,22 @@ def resample(data, in_framerate, out_framerate):
 
     #new x values that we want to calculate interpolated y values for
     new_x = np.linspace(0, in_num_samples-1, int(out_num_samples)) # i.e. [0, 0.5, 1, 1.5, 2, 2.5, 3]
+
+    resampled_data = f(new_x)
+    return resampled_data #return down or upsampled y values
+
+def resample_samples(data, out_num_samples):
+    '''
+    Takes data changes its length to out_num_samples, while keeping values consistent
+    '''
+    in_num_samples = len(data)
+
+    x = np.arange(0, in_num_samples) # i.e. [0, 1, 2, 3]
+    y = data
+    f = interp1d(x, y) # returns a function that goes from x values to y values, linearly interpolates
+
+    #new x values that we want to calculate interpolated y values for
+    new_x = np.linspace(start=0, stop=in_num_samples-1, num=out_num_samples) # i.e. [0, 0.5, 1, 1.5, 2, 2.5, 3]
 
     resampled_data = f(new_x)
     return resampled_data #return down or upsampled y values

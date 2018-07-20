@@ -4,12 +4,14 @@
 #with speaker and emotion labels
 #and then synthesise test utterances
 
+#NB this variable script is for when u want to vary the emotion values over the duration of each utt
+
 echo "---INSIDE synthesise.sh"
 
-if test "$#" -ne 8; then
+if test "$#" -ne 12; then
     echo "################################"
     echo "Usage: "
-    echo "./synthesise.sh <path/to/build_your_own_voice> <path/to/mscproject> <voice name> <speaker_id_to_generate> <arousal> <expectancy> <power> <valence>"
+    echo "./synthesise.sh <path/to/build_your_own_voice> <path/to/mscproject> <voice name> <speaker_id_to_generate> <arousal> <to_arousal> <expectancy> <to_expectancy> <power> <to_power> <valence> <to_valence>"
     echo ""
     echo "Enter a speaker id, and values for arousal expectancy power and valence that you want to generate"
     echo "################################"
@@ -24,9 +26,13 @@ VOICE_NAME=$3
 #Additional input features
 SPEAKER_ID_TO_GENERATE=$4
 AROUSAL=$5
-EXPECTANCY=$6
-POWER=$7
-VALENCE=$8
+TO_AROUSAL=$6
+EXPECTANCY=$7
+TO_EXPECTANCY=$8
+POWER=$9
+TO_POWER=${10}
+VALENCE=${11}
+TO_VALENCE=${12}
 #######################################################
 
 SCRIPT_DIR=${MSCPROJECT_DIR}/scripts
@@ -79,7 +85,8 @@ lab_dir=$(dirname $inp_txt)
 ./scripts/prepare_labels_from_txt.sh $inp_txt $lab_dir $global_config_file
 
 echo "appending features to labels..."
-python ${SCRIPT_DIR}/appendSpeakerIDToLabels_TestTime.py ${EXAMPLE_DIR} ${SPEAKER_ID_TO_GENERATE} ${AROUSAL} ${EXPECTANCY} ${POWER} ${VALENCE}
+echo ${EXAMPLE_DIR} ${SPEAKER_ID_TO_GENERATE} ${AROUSAL} ${TO_AROUSAL} ${EXPECTANCY} ${TO_EXPECTANCY} ${POWER} ${TO_POWER} ${VALENCE} ${TO_VALENCE}
+python ${SCRIPT_DIR}/appendSpeakerIDToLabels_TestTime_Variable.py ${EXAMPLE_DIR} ${SPEAKER_ID_TO_GENERATE} ${AROUSAL} ${TO_AROUSAL} ${EXPECTANCY} ${TO_EXPECTANCY} ${POWER} ${TO_POWER} ${VALENCE} ${TO_VALENCE}
 
 echo "synthesizing durations..."
 ./scripts/submit.sh ${MerlinDir}/src/run_merlin.py $test_dur_config_file
