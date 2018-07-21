@@ -1,0 +1,60 @@
+sox WARN dither: dither clipped 1 samples; decrease volume?
+sox WARN dither: dither clipped 1 samples; decrease volume?
+sox WARN dither: dither clipped 1 samples; decrease volume?
+sox WARN dither: dither clipped 13 samples; decrease volume?
+sox WARN dither: dither clipped 2 samples; decrease volume?
+sox WARN dither: dither clipped 2 samples; decrease volume?
+sox WARN dither: dither clipped 1 samples; decrease volume?
+sox WARN dither: dither clipped 2 samples; decrease volume?
+sox WARN dither: dither clipped 1 samples; decrease volume?
+sox WARN dither: dither clipped 3 samples; decrease volume?
+sox WARN dither: dither clipped 1 samples; decrease volume?
+sox WARN dither: dither clipped 3 samples; decrease volume?
+sox WARN dither: dither clipped 2 samples; decrease volume?
+sox WARN dither: dither clipped 3 samples; decrease volume?
+sox WARN dither: dither clipped 1 samples; decrease volume?
+sox WARN dither: dither clipped 12 samples; decrease volume?
+sox WARN dither: dither clipped 6 samples; decrease volume?
+sox WARN dither: dither clipped 2 samples; decrease volume?
+sox WARN dither: dither clipped 2 samples; decrease volume?
+sox WARN dither: dither clipped 2 samples; decrease volume?
+sox WARN dither: dither clipped 5 samples; decrease volume?
+sox WARN dither: dither clipped 33 samples; decrease volume?
+sox WARN dither: dither clipped 12 samples; decrease volume?
+sox WARN dither: dither clipped 2 samples; decrease volume?
+sox WARN dither: dither clipped 21 samples; decrease volume?
+sox WARN dither: dither clipped 8 samples; decrease volume?
+sox WARN dither: dither clipped 8 samples; decrease volume?
+sox WARN dither: dither clipped 2 samples; decrease volume?
+sox WARN dither: dither clipped 14 samples; decrease volume?
+sox WARN dither: dither clipped 8 samples; decrease volume?
+sox WARN dither: dither clipped 12 samples; decrease volume?
+sox WARN dither: dither clipped 19 samples; decrease volume?
+sox WARN dither: dither clipped 15 samples; decrease volume?
+sox WARN dither: dither clipped 15 samples; decrease volume?
+sox WARN dither: dither clipped 4 samples; decrease volume?
+sox WARN dither: dither clipped 6 samples; decrease volume?
+sox WARN dither: dither clipped 2 samples; decrease volume?
+sox WARN dither: dither clipped 4 samples; decrease volume?
+sox WARN dither: dither clipped 11 samples; decrease volume?
+sox WARN dither: dither clipped 1 samples; decrease volume?
+sox WARN dither: dither clipped 3 samples; decrease volume?
+sox WARN dither: dither clipped 1 samples; decrease volume?
+sox WARN dither: dither clipped 7 samples; decrease volume?
+sox WARN dither: dither clipped 1 samples; decrease volume?
+sox WARN dither: dither clipped 3 samples; decrease volume?
+sox WARN dither: dither clipped 2 samples; decrease volume?
+sox WARN dither: dither clipped 5 samples; decrease volume?
+Traceback (most recent call last):
+  File "/group/project/cstr1/mscslp/2017-18/s1785140_Jason_Fong/merlin/misc/scripts/frontend/utils/genScmFile.py", line 61, in <module>
+    utt_text   = create_dictionary_from_txt_dir(in_txt_dir)
+  File "/group/project/cstr1/mscslp/2017-18/s1785140_Jason_Fong/merlin/misc/scripts/frontend/utils/genScmFile.py", line 22, in create_dictionary_from_txt_dir
+    text = readtext(textfile)
+  File "/group/project/cstr1/mscslp/2017-18/s1785140_Jason_Fong/merlin/misc/scripts/frontend/utils/genScmFile.py", line 6, in readtext
+    data = f.read()
+  File "/afs/inf.ed.ac.uk/user/s17/s1785140/miniconda3/envs/msc/lib/python3.6/encodings/ascii.py", line 26, in decode
+    return codecs.ascii_decode(input, self.errors)[0]
+UnicodeDecodeError: 'ascii' codec can't decode byte 0xe2 in position 50: ordinal not in range(128)
+UniSyn: using default diphone ax-ax for w-s
+UniSyn: using default diphone ax-ax for w-hh
+./scripts/run_state_aligner.sh: line 51: 19544 Terminated              python $aligner/forced_alignment.py

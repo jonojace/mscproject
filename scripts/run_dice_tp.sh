@@ -5,7 +5,7 @@
 BUILD_YOUR_OWN_VOICE_DIR=/group/project/cstr1/mscslp/2017-18/s1785140_Jason_Fong/merlin/egs/tokenprojection
 MSCPROJECT_DIR=/afs/inf.ed.ac.uk/user/s17/s1785140/mscproject
 # SCRATCH_DIR=/afs/inf.ed.ac.uk/group/msc-projects/s1785140 #this directory can max hold 20 gigs
-SCRATCH_DIR=/group/project/cstr1/mscslp/2017-18/s1785140_Jason_Fong #perhaps use this place has TBs!, but its not backed up!
+SCRATCH_DIR=/group/project/cstr1/mscslp/2017-18/s1785140_Jason_Fong/data_for_tokenprojection #perhaps use this place has TBs!, but its not backed up!
 
 #NB All the data!!!!
 AVEC2012_DIR=/group/project/disnv/AVEC2012

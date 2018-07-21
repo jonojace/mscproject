@@ -52,17 +52,18 @@ source activate msc
 
 
 
-
+#YOU SHOULD DO THIS BY HAND!!!
 ##########################################WARNING - UNCOMMENT AT YOUR OWN RISK
 ##########################################WARNING - UNCOMMENT AT YOUR OWN RISK
 ##########################################WARNING - UNCOMMENT AT YOUR OWN RISK
-#delete build your own voice dir NB don't want to clear out all our saved models!
+# # delete build your own voice dir NB don't want to clear out all our saved models!
 # echo "DELETING AND REPLACING EXAMPLE_DIR"
 # if [ -d "${EXAMPLE_DIR}" ]; then
 #   rm -r ${EXAMPLE_DIR}
 # fi
 #
-# #replace with fresh version
+# # replace with fresh version
+# echo "REPLACING WITH FRESH VERSION"
 # cp -r ${FRESH_EXAMPLE_DIR} ${EXAMPLE_DIR}
 ##########################################WARNING - UNCOMMENT AT YOUR OWN RISK
 ##########################################WARNING - UNCOMMENT AT YOUR OWN RISK
@@ -73,15 +74,17 @@ source activate msc
 
 
 
-
+echo "Removing cleaned data dir"
 if [ -d "${CLEANED_DATA_DIR}" ]; then
   rm -r ${CLEANED_DATA_DIR}
 fi
 
+echo "Copying over edited files"
 #copy over edited files
 echo copying over files from copy_over to relevant destinations
-cp ${COPY_OVER_DIR}/tp_questions/questions-radio_dnn_416.hed ${MERLIN_DIR}/misc/questions #questions file
+cp ${COPY_OVER_DIR}/questions-radio_dnn_416_tp.hed ${MERLIN_DIR}/misc/questions #questions file
 cp ${COPY_OVER_DIR}/label_normalisation.py ${MERLIN_DIR}/src/frontend #label normalisation for ([\d\.-]+)
+cp ${COPY_OVER_DIR}/forced_alignment.py ${MERLIN_DIR}/misc/scripts/alignment/state_align #for python3 and for larger datasets
 
 #cd into the correct directory for running the merlin step by step scripts
 cd ${EXAMPLE_DIR}/s1
@@ -89,9 +92,15 @@ cd ${EXAMPLE_DIR}/s1
 # step 1: run setup
 ./01_setup.sh ${VOICE_NAME}
 
+#sed in the correct questions file
+sed -i "s/QuestionFile=questions-radio_dnn_416.hed/QuestionFile=questions-radio_dnn_416_tp.hed/g" ${EXAMPLE_DIR}/s1/conf/global_settings.cfg
+
+#sed in the ${VOICE_NAME}.scp file list id into the config file
+sed -i "s/FileIDList=.*/FileIDList=${VOICE_NAME}.scp/g" ${EXAMPLE_DIR}/s1/conf/global_settings.cfg
+
 #check if txt and wav folders in  clean data folder exist, if they do, delete and recreate them
 #txt folder
-echo "Cleaning our the cleaned data dir for wav and txt"
+echo "Cleaning out the cleaned data dir for wav and txt"
 mkdir -p ${CLEANED_DATA_DIR}/txt
 if [ -d "${CLEANED_DATA_DIR}/txt" ]; then
   rm -r ${CLEANED_DATA_DIR}/txt
@@ -111,6 +120,7 @@ fi
 # clean data for this experiment, and transfer to the clean data folder
 echo "Running AVEC2012_clean_for_merlin.py"
 python ${SCRIPT_DIR}/AVEC2012_clean_for_merlin.py ${AVEC2012_DIR}/ ${CLEANED_DATA_DIR}/ ${MIN_WAV_FILE_SIZE}
+#ython ${SCRIPT_DIR}/AVEC2012_clean_for_merlin_test.py ${AVEC2012_DIR}/ ${CLEANED_DATA_DIR}/ ${MIN_WAV_FILE_SIZE}
 
 #NB TESTING! just removing all AVEC2012 data so we can see if we can align only on leslie's data
 # rm ${CLEANED_DATA_DIR}/wav/*

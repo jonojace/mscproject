@@ -14,13 +14,22 @@ Input are like: (a, e, p, v)
 Outputs are like: (sent_dim_1, sent_dim_2, sent_dim_3, ..., sent_dim_10)
 '''
 
+'''
+handle the dataset from files on disk
+'''
 #define the files that contain input features and output features
 in_filename = '/group/project/cstr1/mscslp/2017-18/s1785140_Jason_Fong/merlin/egs/tokenprojection/s1/experiments/tokenprojection/acoustic_model/data/label_state_align'
 out_filename = '/afs/inf.ed.ac.uk/user/s17/s1785140/mscproject/projection_weights_backup/tokenprojection/acoustic_model/proj_INFERENCE_epoch_24'
 
 # create class that can generate datasets from our files
 class TransformDataset(Dataset):
-    def __init__(self, in_filename, out_filename, train_or_test):
+    '''
+    in_filename: list of input features. usually a lab file from htk with emotio labels and utt_id
+    out_filename: projection weights matrix file
+    train_or_test: get the training set or the test set
+    flip: whether to flip around input and targets
+    '''
+    def __init__(self, in_filename, out_filename, train_or_test, flip=False):
         #read in whole list of files inside in_filename
         paths = glob(os.path.join(in_filename, '*'))
 
@@ -80,7 +89,13 @@ class TransformDataset(Dataset):
         for i, line in enumerate(lines):
             #only get lines from the out_filename that were AVEC2012, i.e. those that are in emot_dict
             if i in emot_dict:
-                self.datarows.append((torch.tensor(emot_dict[i], dtype=torch.float), torch.tensor([float(string) for string in line.split()])))
+                emotions = torch.tensor(emot_dict[i], dtype=torch.float)
+                controlvector = torch.tensor([float(string) for string in line.split()])
+                if not flip:
+                    self.datarows.append((emotions, controlvector))
+                elif flip:
+                    self.datarows.append((controlvector, emotions))
+
 
         # print(len(self.datarows), self.datarows[0])
 
@@ -92,13 +107,15 @@ class TransformDataset(Dataset):
         #((a, e, p, v), (sent_dim_1, sent_dim_2, sent_dim_3, ..., sent_dim_10))
         return self.datarows[idx]
 
+#set seed so we can get reproducible results
 torch.manual_seed(1337)
+FLIP = False
 
 '''
-load the data
+load the data into dataloader
 '''
-trainset = TransformDataset(in_filename, out_filename, 'train')
-testset = TransformDataset(in_filename, out_filename, 'test')
+trainset = TransformDataset(in_filename, out_filename, 'train', flip=FLIP)
+testset = TransformDataset(in_filename, out_filename, 'test', flip=FLIP)
 
 trainloader = torch.utils.data.DataLoader(trainset, batch_size=2,
                                           shuffle=False, num_workers=2)
@@ -110,22 +127,31 @@ define the model
 '''
 class Net(nn.Module):
 
-    def __init__(self, hdims, hlayers):
+    def __init__(self, hdims, hlayers, flip=False):
         super(Net, self).__init__()
+        if not flip:
+            in_dims = 4
+            out_dims = 10
+        elif flip:
+            in_dims = 10
+            out_dims = 4
         # an affine operation: y = Wx + b
-        self.fc1 = nn.Linear(4, hdims)
+        self.fc1 = nn.Linear(in_dims, hdims)
         self.fc2 = nn.Linear(hdims, hdims)
-        self.fc3 = nn.Linear(hdims, 10)
+        self.fc3 = nn.Linear(hdims, out_dims)
+        self.dropout = nn.Dropout(p=0.2)
         self.hlayers = hlayers
 
     def forward(self, x):
         x = F.relu(self.fc1(x))
+        x = self.dropout(x)
         for i in range(self.hlayers):
             x = F.relu(self.fc2(x))
+            x = self.dropout(x)
         x = self.fc3(x)
         return x
 
-net = Net(hdims=30, hlayers=1)
+net = Net(hdims=50, hlayers=5, flip=FLIP)
 print(net)
 
 '''
@@ -167,8 +193,9 @@ print('Finished Training')
 test the model
 '''
 print('Testing the model')
-
+net.eval() #need this so that dropout isn't applied during forward passes
 with torch.no_grad():
+    print('Number of mini-batches in testdata', len(testloader))
     for data in testloader:
         inputs, targets = data
         outputs = net(inputs)

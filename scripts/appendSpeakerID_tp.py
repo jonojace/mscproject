@@ -10,10 +10,6 @@ Appends speaker+emotion IDs to HTS formatted label
 Doesn't append emotion IDs to lab files for leslie simms data
 
 If you want to ignore the emotion ids just don't add those questions to the questions file
-
-NB IF THIS SCRIPT DOESN'T WORK WELL FOR LESLIE SIMMS DATA
-JUST MAKE AN EASIER SCRIPT THAT APPENDS K:21= TO END OF ALL HER SENTENCES IN A SEPARATE folder
-THIS SCRIPT IS MADE MOER COMPLICATED BECAUSE WE HAVE LESLIE SIMMS AND AVEC2012 DATA IN THE SAME FOLDER
 '''
 
 #check for correct number of args
@@ -218,7 +214,9 @@ for lf in label_files:
                 if emotion == 'power': letter = 'N'
                 if emotion == 'valence': letter = 'O'
 
-                to_add_to_lab_line = to_add_to_lab_line + '/' + letter + ':' + str(state_avg)
+                #use this string formatting rather than just str(state_avg) as that can output
+                #scientific notation that might be confusing the merlin regular expressions perhaps.
+                to_add_to_lab_line = to_add_to_lab_line + '/' + letter + ':' + '{:.10f}'.format(state_avg)
 
         #append answers onto the end of each line in the lab file in label_state_align
         #for each line in the data, append speaker ID and emotion ID to end of line just before state indicator

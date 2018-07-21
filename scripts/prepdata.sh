@@ -24,29 +24,18 @@ COPY_OVER_DIR=${MSCPROJECT_DIR}/copy_over
 
 #folders in mscproject directory
 SCRIPT_DIR=${MSCPROJECT_DIR}/scripts #holds all scripts
-FRESH_EXAMPLE_DIR=${MSCPROJECT_DIR}/merlin-master/egs/build_your_own_voice #fresh copy of merlin for resetting directories
+FRESH_EXAMPLE_DIR=${MSCPROJECT_DIR}/merlin-master/egs/${VOICE_NAME} #fresh copy of merlin for resetting directories
 # TEXT_TO_GENERATE_FOLDER=${MSCPROJECT_DIR}/text_to_generate #contains txt files to generate
 
 CLEANED_DATA_DIR=${SCRATCH_DIR}/AVEC2012_clean_for_merlin
 
 MIN_WAV_FILE_SIZE=100000 #in bytes
-VAL_AND_TEST_PERCENT=10 #does this greatly affect DNN training quality?
+VAL_AND_TEST_PERCENT=5 #does this greatly affect DNN training quality?
 SAMPLING_FREQUENCY=48000
 
 #source the conda environment
 # source ~/.bashrc #NB is this really needed for sox?? or something else??? only needed on MLP cluster? I think this should only be done once after logging into the MLP cluster
 source activate msc
-
-#NB!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-#The code below only cleans the build your own voice directory
-#if you want to clean the merlin folder you'll will have to delete and reinstall it yourself
-################################################
-#delete build your own voice dir NB don't want to clear out all our saved models!
-# if [ -d "${EXAMPLE_DIR}" ]; then
-#   rm -r ${EXAMPLE_DIR}
-# fi
-#replace with fresh version
-# cp -r ${FRESH_EXAMPLE_DIR} ${EXAMPLE_DIR}
 
 if [ -d "${CLEANED_DATA_DIR}" ]; then
   rm -r ${CLEANED_DATA_DIR}
@@ -54,20 +43,21 @@ fi
 
 #copy over edited files
 echo copying over files from copy_over to relevant destinations
-cp ${COPY_OVER_DIR}/emotion_questions/questions-radio_dnn_416.hed ${MERLIN_DIR}/misc/questions #questions file
+cp ${COPY_OVER_DIR}/questions-radio_dnn_416_emotionbaseline.hed ${MERLIN_DIR}/misc/questions #questions file
 cp ${COPY_OVER_DIR}/label_normalisation.py ${MERLIN_DIR}/src/frontend #label normalisation for ([\d\.-]+)
-
-#BELOW ARE ONLY NEEDED IF U WANT TO USE CONTINUOUS LABELS AS SRIKANTH DETAILED
-# cp ${COPY_OVER_DIR}/prepare_config_files.sh ${EXAMPLE_DIR}/s1/scripts #${MERLIN_DIR} # merlin/egs/build_your_own_voice/s1/scripts/prepare_config_files.sh , you added a line for additional features
-# cp ${COPY_OVER_DIR}/prepare_config_files_for_synthesis.sh ${EXAMPLE_DIR}/s1/scripts
-# cp ${COPY_OVER_DIR}/duration_demo.conf ${MERLIN_DIR}/misc/recipes # merlin/misc/recipes/duration_demo.conf #you added additional_features = None
-# cp ${COPY_OVER_DIR}/acoustic_demo.conf ${MERLIN_DIR}/misc/recipes # merlin/misc/recipes/acoustic_demo.conf #you added additional_features = None
+cp ${COPY_OVER_DIR}/forced_alignment.py ${MERLIN_DIR}/misc/scripts/alignment/state_align #for python3 and for larger datasets
 
 #cd into the correct directory for running the merlin step by step scripts
 cd ${EXAMPLE_DIR}/s1
 
 # step 1: run setup
 ./01_setup.sh ${VOICE_NAME}
+
+#sed in the correct questions file
+sed -i "s/QuestionFile=questions-radio_dnn_416.hed/QuestionFile=questions-radio_dnn_416_emotionbaseline.hed/g" ${EXAMPLE_DIR}/s1/conf/global_settings.cfg
+
+#sed in the ${VOICE_NAME}.scp file list id into the config file
+sed -i "s/FileIDList=.*/FileIDList=${VOICE_NAME}.scp/g" ${EXAMPLE_DIR}/s1/conf/global_settings.cfg
 
 #check if txt and wav folders in  clean data folder exist, if they do, delete and recreate them
 #txt folder
@@ -89,12 +79,14 @@ fi
 
 # clean data for this experiment, and transfer to the clean data folder
 python ${SCRIPT_DIR}/AVEC2012_clean_for_merlin.py ${AVEC2012_DIR}/ ${CLEANED_DATA_DIR}/ ${MIN_WAV_FILE_SIZE}
+#python ${SCRIPT_DIR}/AVEC2012_clean_for_merlin_test.py ${AVEC2012_DIR}/ ${CLEANED_DATA_DIR}/ ${MIN_WAV_FILE_SIZE}
 
 #convert bit rate
 for i in ${CLEANED_DATA_DIR}/wav/*.wav; do
   #-G automatically adjusts gain to stop clipping
-  	sox -G $i -b16 ${i%.wav}_16bit.wav; #percentage removes the .wav from the filename
-  	rm $i
+  sox -G $i -b16 ${i%.wav}_temp.wav; #percentage removes the .wav from the filename
+  rm $i #remove the original file
+  mv ${i%.wav}_temp.wav $i #remove _temp from the name of the modified file
 done
 
 #copy cleaned data into database folder
@@ -142,8 +134,8 @@ mkdir -p database/labels/label_state_align
 python ${SCRIPT_DIR}/appendSpeakerAndEmotionIDToLabels.py ${EXAMPLE_DIR} ${AVEC2012_DIR}
 #NB Overwriting the label state align lab files that were copied over to acoustic and duration model
 #directories by ./02_prepare_labels.sh
-rsync -a ${EXAMPLE_DIR}/s1/database/labels/label_state_align/ ${EXAMPLE_DIR}/s1/experiments/avec2012/duration_model/data/label_state_align/
-rsync -a ${EXAMPLE_DIR}/s1/database/labels/label_state_align/ ${EXAMPLE_DIR}/s1/experiments/avec2012/acoustic_model/data/label_state_align/
+rsync -a ${EXAMPLE_DIR}/s1/database/labels/label_state_align/ ${EXAMPLE_DIR}/s1/experiments/${VOICE_NAME}/duration_model/data/label_state_align/
+rsync -a ${EXAMPLE_DIR}/s1/database/labels/label_state_align/ ${EXAMPLE_DIR}/s1/experiments/${VOICE_NAME}/acoustic_model/data/label_state_align/
 
 #since we may not be able to align properly for all the data, we need to update the number of utterances
 num_utts=$(ls -1q ${EXAMPLE_DIR}/s1/database/labels/label_state_align | wc -l) #number of files that successfully get state alignments
@@ -155,7 +147,6 @@ test_size=$VAL_AND_TEST_SIZE
 sed -i "s/Train=\([0-9]\+\)/Train=${train_size}/g" ${EXAMPLE_DIR}/s1/conf/global_settings.cfg
 sed -i "s/Valid=\([0-9]\+\)/Valid=${val_size}/g" ${EXAMPLE_DIR}/s1/conf/global_settings.cfg
 sed -i "s/Test=\([0-9]\+\)/Test=${test_size}/g" ${EXAMPLE_DIR}/s1/conf/global_settings.cfg
-
 
 # step 3: extract acoustic features
 ./03_prepare_acoustic_features.sh database/wav database/feats

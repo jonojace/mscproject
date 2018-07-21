@@ -2,12 +2,19 @@
 
 #paths appropriate for dice
 # BUILD_YOUR_OWN_VOICE_DIR=/afs/inf.ed.ac.uk/user/s17/s1785140/merlin/egs/build_your_own_voice #this directory is running out of space
-BUILD_YOUR_OWN_VOICE_DIR=/group/project/cstr1/mscslp/2017-18/s1785140_Jason_Fong/merlin/egs/build_your_own_voice
+BUILD_YOUR_OWN_VOICE_DIR=/group/project/cstr1/mscslp/2017-18/s1785140_Jason_Fong/merlin/egs/emotionbaseline
 MSCPROJECT_DIR=/afs/inf.ed.ac.uk/user/s17/s1785140/mscproject
 # SCRATCH_DIR=/afs/inf.ed.ac.uk/group/msc-projects/s1785140 #this directory can max hold 20 gigs
-SCRATCH_DIR=/group/project/cstr1/mscslp/2017-18/s1785140_Jason_Fong #perhaps use this place has TBs!, but its not backed up!
+SCRATCH_DIR=/group/project/cstr1/mscslp/2017-18/s1785140_Jason_Fong/data_for_emotionbaseline #perhaps use this place has TBs!, but its not backed up!
+
+#ALL DATA
 AVEC2012_DIR=/group/project/disnv/AVEC2012
-VOICE_NAME=avec2012
+VOICE_NAME=emotionbaseline_alldata
+
+#TESTING DATA
+# AVEC2012_DIR=/afs/inf.ed.ac.uk/user/s17/s1785140/mscproject/small_data_for_testing/AVEC2012
+# VOICE_NAME=emotionbaseline
+
 
 ##############################
 #Additional features when synthesising

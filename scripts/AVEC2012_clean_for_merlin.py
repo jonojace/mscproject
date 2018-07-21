@@ -32,13 +32,13 @@ MIN_WAV_FILE_SIZE = int(sys.argv[3])
 TRANSCRIPT_FOLDER = 'transcripts/original/'
 WAV_FOLDER = 'recordings/dialogues/'
 
-inner_folders = ['train/'] # folders to explore inside INPUT_FOLDER
+# inner_folders = ['train/'] # folders to explore inside INPUT_FOLDER
 
-# inner_folders = [
-#     'train/',
-#     'devel/', #NB WARNING You need to exclude broken dialogues for devel and test in the same way you did for train
-#     'test/'
-# ]
+inner_folders = [
+    'train/',
+    'devel/', #NB WARNING You need to exclude broken dialogues for devel and test in the same way you did for train
+    'test/'
+]
 
 #optionally control how much data you want to convert, rather than converting all of the data in the folder
 INCLUDE_LIST = None #takes all the data from the folder

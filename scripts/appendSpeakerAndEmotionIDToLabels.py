@@ -34,58 +34,58 @@ SENT_AVG_OUTPUT_FOLDER = '/afs/inf.ed.ac.uk/user/s17/s1785140/analysis_mscprojec
 #NB REMEMBER TO RSYNC OVER THE QUESTIONS FILE FROM DICE MACHINE TO MLP OR EDDIE CLUSTER
 
 #given an audio file number, returns a specific speaker id
-def get_speaker_id(dataset, audio_file_num):
+def get_speaker_id_and_sex(dataset, audio_file_num):
     if dataset == 'train':
         if audio_file_num in range(2,8):
-            return 1
+            return 1, 'girl'
         elif audio_file_num in range(8,12):
-            return 2
+            return 2, 'guy'
         elif audio_file_num in range(12,16):
-            return 3
+            return 3, 'girl'
         elif audio_file_num in range(16,20):
-            return 4
+            return 4, 'guy'
         elif audio_file_num in range(20,24):
-            return 5
+            return 5, 'girl'
         elif audio_file_num in range(28,32):
-            return 6
+            return 6, 'guy'
         else:
             raise LookupError('Tried to use an audio file which is not associated with a speaker ID. Please check that you are using the correct audio files.')
     elif dataset == 'devel':
         if audio_file_num in range(1,5):
-            return 1
+            return 1, 'guy'
         elif audio_file_num in range(5,9):
-            return 2
+            return 2, 'guy'
         elif audio_file_num in range(9,13):
-            return 7
+            return 7, 'girl'
         elif audio_file_num in range(13,17):
-            return 8
+            return 8, 'guy'
         elif audio_file_num in range(17,21):
-            return 9
+            return 9, 'girl'
         elif audio_file_num in range(21,25):
-            return 10
+            return 10, 'girl'
         elif audio_file_num in range(25,29):
-            return 11
+            return 11, 'girl'
         elif audio_file_num in range(29,31):
-            return 12
+            return 12, 'girl'
         else:
             raise LookupError('Tried to use an audio file which is not associated with a speaker ID. Please check that you are using the correct audio files.')
     elif dataset == 'tests':
         if audio_file_num in range(1,5):
-            return 13
+            return 13, 'girl'
         elif audio_file_num in range(5,8):
-            return 14
+            return 14, 'guy'
         elif audio_file_num in range(8,12):
-            return 15
+            return 15, 'girl'
         elif audio_file_num in range(12,16):
-            return 16
+            return 16, 'guy'
         elif audio_file_num in range(16,20):
-            return 17
+            return 17, 'girl'
         elif audio_file_num in range(20,25):
-            return 18
+            return 18, 'guy'
         elif audio_file_num in range(25,29):
-            return 19
+            return 19, 'girl'
         elif audio_file_num in range(29,33):
-            return 20
+            return 20, 'girl'
         else:
             raise LookupError('Tried to use an audio file which is not associated with a speaker ID. Please check that you are using the correct audio files.')
     else:
@@ -102,10 +102,14 @@ for lf in label_files:
     dataset = re.findall('(\w+)_audio', lf)[0]
     audio_file_num = int(re.findall('audio(\d+)', lf)[0])
     sent_num = int(re.findall('sent(\d+)', lf)[0])
-    s_id = get_speaker_id(dataset, audio_file_num)
+    s_id, sex = get_speaker_id_and_sex(dataset, audio_file_num)
 
     #create HTS style answer for speaker ID question
     s_id_label = '/K:' + str(s_id) + '=' #note that = is so that we don't match /K:1 when we hav /K:10 or /K:11 etc
+    if sex == 'girl':
+        sex_id = '/GIRL'
+    else:
+        sex_id = '/MALE'
 
     #make transcript file name
     tf = dataset + '_transcript' + str(audio_file_num).zfill(3) + '.txt'
@@ -175,7 +179,7 @@ for lf in label_files:
         state_start = math.floor(VIDEO_FRAMERATE * state_start)
         state_end = math.ceil(VIDEO_FRAMERATE * state_end)
 
-        to_add_to_lab_line = s_id_label #we add the emotion labels onto the end of this
+        to_add_to_lab_line = s_id_label + sex_id #we add the emotion labels onto the end of this
 
         #NB this is for getting average emotion value over the entire sentence
         if line_idx == 0:
@@ -201,7 +205,9 @@ for lf in label_files:
             if emotion == 'power': letter = 'N'
             if emotion == 'valence': letter = 'O'
 
-            to_add_to_lab_line = to_add_to_lab_line + '/' + letter + ':' + str(state_avg)
+            #use this string formatting rather than just str(state_avg) as that can output
+            #scientific notation that might be confusing the merlin regular expressions perhaps.
+            to_add_to_lab_line = to_add_to_lab_line + '/' + letter + ':' + '{:.10f}'.format(state_avg)
 
         # print(to_add_to_lab_line)
 
