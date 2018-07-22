@@ -45,7 +45,7 @@ def plot_hist(emotion, subplot):
 # plot_hist(emotion, plt)
 
 # four axes returned as a 2D array, subplots
-f, axarr = plt.subplots(2, 2)
+f, axarr = plt.subplots(2, 5)
 plot_hist('arousal', axarr[0,0])
 plot_hist('expectancy', axarr[0,1])
 plot_hist('power', axarr[1,0])
