@@ -6,21 +6,24 @@ import sys
 Appends speaker IDs to HTS formatted labels
 '''
 
-if len(sys.argv) != 7:
+if len(sys.argv) != 8:
     print("################################")
     print("appendSpeakerIDToLabels_TestTime usage:")
-    print("python appendSpeakerIDToLabels_TestTime.py <build_your_own_voice> <speaker id to generate> <arousal> <expectancy> <power> <valence>")
+    print("python appendSpeakerIDToLabels_TestTime.py <build_your_own_voice> <speaker id to generate> <arousal> <expectancy> <power> <valence> <voice name>")
     print("EG: /afs/inf.ed.ac.uk/user/s17/s1785140/merlin/egs/build_your_own_voice/s1/database/labels/label_state_align/ 1")
     print("################################")
     raise Exception
 
+voice_name = sys.argv[7]
+
 SPEAKER_ID = sys.argv[2]
-LABEL_FOLDER = sys.argv[1] + '/s1/experiments/avec2012/test_synthesis/prompt-lab/'
+LABEL_FOLDER = sys.argv[1] + '/s1/experiments/{}/test_synthesis/prompt-lab/'.format(voice_name)
 
 arousal_val = sys.argv[3]
 expectancy_val = sys.argv[4]
 power_val = sys.argv[5]
 valence_val = sys.argv[6]
+
 
 #get list of all label files
 label_files = sorted(os.listdir(LABEL_FOLDER))
@@ -34,8 +37,9 @@ for lf in label_files:
     expectancy = '/M:' + expectancy_val
     power = '/N:' + power_val
     valence = '/O:' + valence_val
+    sex = '/GIRL'
 
-    to_add = s_id_label + arousal + expectancy + power + valence
+    to_add = s_id_label + arousal + expectancy + power + valence + sex
 
     #read in their data into list of lines
     with open(LABEL_FOLDER + lf) as f:

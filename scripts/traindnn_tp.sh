@@ -24,10 +24,10 @@ cd ${EXAMPLE_DIR}/s1
 ./05_train_duration_model.sh conf/duration_${VOICE_NAME}.conf
 
 #copy the projection weights folder so it doesn't get overwritten when we train the acoustic model
-cp -r projection_weights/ projection_weights_duration_model
+cp -r projection_weights/* projection_weights_duration_model
 
 # step 6: train acoustic model
 ./06_train_acoustic_model.sh conf/acoustic_${VOICE_NAME}.conf
 
 #rename folder
-mv projection_weights/ projection_weights_acoustic_model
+cp -r projection_weights/* projection_weights_acoustic_model

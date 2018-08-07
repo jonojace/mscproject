@@ -21,7 +21,9 @@ OUT_DIR = '/afs/inf.ed.ac.uk/user/s17/s1785140/mscproject/plots_and_figures/emot
 IN_FRAMERATE = 49.979 #framerate of AVEC2012 emotion labels
 OUT_FRAMERATE = 200 #merlin is 1 frame every 5ms
 
-INNER_FOLDERS = ['train', 'devel', 'test']
+# INNER_FOLDERS = ['train', 'devel', 'test']
+INNER_FOLDERS = ['train']
+
 
 # EXCLUDE_LIST = [
 #     "tests_audio011" #the transcript sent timestamps refer to times past the length of the actual file
@@ -132,7 +134,7 @@ for inner_folder in INNER_FOLDERS:
             plot_arc('valence', axarr[1,1])
 
             #make filename for the plot figure to save to disk
-            file_name = renamed_inner_folder + '_audio' + dialog_num + '_sent' + str(i) + '_16bit.png'
+            file_name = renamed_inner_folder + '_audio' + dialog_num + '_sent' + str(i) + '_16bit.eps'
             plt.tight_layout()
-            plt.savefig(OUT_DIR + '/' + file_name)
+            plt.savefig(OUT_DIR + '/' + file_name, format='eps')
             plt.close()

@@ -9,7 +9,7 @@ echo "---INSIDE prepdata.sh"
 if test "$#" -ne 6; then
     echo "################################"
     echo "Usage: "
-    echo "./train.sh <path/to/build_your_own_voice> <path/to/mscproject> <path/to/scratch_dir> <path/to/AVEC2012> <voice name> <LESLIE_DATA>"
+    echo "./train.sh <path/to/build_your_own_voice> <path/to/mscproject> <path/to/scratch_dir> <path/to/label state align folder> <voice name> <LESLIE_DATA>"
     echo "################################"
     exit 1
 fi
@@ -135,7 +135,7 @@ for i in ${CLEANED_DATA_DIR}/wav/*.wav; do
   #-r 48000 resamples
   #-b16 changes bit depth
   #remix 1 changes from stereo to mono
-  	sox -G $i -r 48000 -b16 ${i%.wav}_temp.wav remix 1; #percentage removes the .wav from the filename
+  	sox -G $i -r ${SAMPLING_FREQUENCY} -b16 ${i%.wav}_temp.wav remix 1; #percentage removes the .wav from the filename
   	rm $i #remove the original file
     mv ${i%.wav}_temp.wav $i #remove _temp from the name of the modified file
 done

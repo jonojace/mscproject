@@ -79,7 +79,7 @@ echo "All successfull!! Your demo voice is ready :)"
 # # rsync -avu ${EXAMPLE_DIR}/s1/experiments/${VOICE_NAME}/test_synthesis/wav /afs/inf.ed.ac.uk/user/s17/s1785140/analysis_mscproject/generated_output
 
 #open the folder with output wav files (only do this when running on dice)
-nautilus ${EXAMPLE_DIR}/s1/experiments/${VOICE_NAME}/test_synthesis/wav
+# nautilus ${EXAMPLE_DIR}/s1/experiments/${VOICE_NAME}/test_synthesis/wav
 
 
 

@@ -11,9 +11,14 @@ from glob import glob
 from math import log10, floor
 
 #directories
-FIRST_EPOCH_PROJECTION_WEIGHTS_FILE = '/Users/jonojace/Downloads/plotting/proj_INFERENCE_epoch_1'
-LAST_EPOCH_PROJECTION_WEIGHTS = '/Users/jonojace/Downloads/plotting/proj_INFERENCE_epoch_23'
-FIG_NAME = 'figure.eps' # output plots here
+#NB TEST SMALL DATA
+# FIRST_EPOCH_PROJECTION_WEIGHTS_FILE = '/afs/inf.ed.ac.uk/user/s17/s1785140/mscproject/projection_weights_backup/tokenprojection/projection_weights_acoustic_model/proj_INFERENCE_epoch_1'
+# LAST_EPOCH_PROJECTION_WEIGHTS = '/afs/inf.ed.ac.uk/user/s17/s1785140/mscproject/projection_weights_backup/tokenprojection/projection_weights_acoustic_model/proj_INFERENCE_epoch_23'
+
+#NB ALL DATA
+FIRST_EPOCH_PROJECTION_WEIGHTS_FILE = '/afs/inf.ed.ac.uk/user/s17/s1785140/mscproject/projection_weights_backup/tokenprojection_alldata/projection_weights_acoustic_model/projection_weights/proj_INFERENCE_epoch_1'
+LAST_EPOCH_PROJECTION_WEIGHTS = '/afs/inf.ed.ac.uk/user/s17/s1785140/mscproject/projection_weights_backup/tokenprojection_alldata/projection_weights_acoustic_model/projection_weights/proj_INFERENCE_epoch_25'
+FIG_NAME = '/afs/inf.ed.ac.uk/user/s17/s1785140/mscproject/plots_and_figures/sentence_embedding_hist.eps' # output plot here
 
 #load in data
 with open(FIRST_EPOCH_PROJECTION_WEIGHTS_FILE) as f:
@@ -34,7 +39,7 @@ for i, line in enumerate(weights):
 
 #get number of sentence embedding dims
 n_dims = len(weights[0])
-print(weights[0])
+# print(weights[0])
 
 #get subplots
 n_rows = 2

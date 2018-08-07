@@ -79,7 +79,7 @@ lab_dir=$(dirname $inp_txt)
 ./scripts/prepare_labels_from_txt.sh $inp_txt $lab_dir $global_config_file
 
 echo "appending features to labels..."
-python ${SCRIPT_DIR}/appendSpeakerIDToLabels_TestTime.py ${EXAMPLE_DIR} ${SPEAKER_ID_TO_GENERATE} ${AROUSAL} ${EXPECTANCY} ${POWER} ${VALENCE}
+python ${SCRIPT_DIR}/appendSpeakerIDToLabels_TestTime.py ${EXAMPLE_DIR} ${SPEAKER_ID_TO_GENERATE} ${AROUSAL} ${EXPECTANCY} ${POWER} ${VALENCE} ${VOICE_NAME}
 
 echo "synthesizing durations..."
 ./scripts/submit.sh ${MerlinDir}/src/run_merlin.py $test_dur_config_file
@@ -97,7 +97,7 @@ echo "All successfull!! Your demo voice is ready :)"
 # rsync -avu ${EXAMPLE_DIR}/s1/experiments/${VOICE_NAME}/test_synthesis/wav /afs/inf.ed.ac.uk/user/s17/s1785140/analysis_mscproject/generated_output
 
 #open the folder with output wav files (only do this when running on dice)
-nautilus ${EXAMPLE_DIR}/s1/experiments/${VOICE_NAME}/test_synthesis/wav
+# nautilus ${EXAMPLE_DIR}/s1/experiments/${VOICE_NAME}/test_synthesis/wav
 
 
 

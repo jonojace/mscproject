@@ -29,7 +29,7 @@ TRANSCRIPT_DIR = AVEC2012_DIR + '/transcripts/original/{}/'
 TIME_DIVISOR = 10000000 #divide the timestamp in HTS label files by this to get to seconds
 VIDEO_FRAMERATE = 49.979 #merlin is 1 frame every 5ms
 
-SENT_AVG_OUTPUT_FOLDER = '/afs/inf.ed.ac.uk/user/s17/s1785140/analysis_mscproject/sent_emotion_avg'
+SENT_AVG_OUTPUT_FOLDER = '/afs/inf.ed.ac.uk/user/s17/s1785140/mscproject/sent_emotion_avg'
 
 #NB REMEMBER TO RSYNC OVER THE QUESTIONS FILE FROM DICE MACHINE TO MLP OR EDDIE CLUSTER
 

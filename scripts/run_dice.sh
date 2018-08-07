@@ -7,13 +7,17 @@ MSCPROJECT_DIR=/afs/inf.ed.ac.uk/user/s17/s1785140/mscproject
 # SCRATCH_DIR=/afs/inf.ed.ac.uk/group/msc-projects/s1785140 #this directory can max hold 20 gigs
 SCRATCH_DIR=/group/project/cstr1/mscslp/2017-18/s1785140_Jason_Fong/data_for_emotionbaseline #perhaps use this place has TBs!, but its not backed up!
 
-#ALL DATA
-AVEC2012_DIR=/group/project/disnv/AVEC2012
-VOICE_NAME=emotionbaseline_alldata
+# ALL DATA
+# AVEC2012_DIR=/group/project/disnv/AVEC2012
+# VOICE_NAME=emotionbaseline_alldata
 
 #TESTING DATA
 # AVEC2012_DIR=/afs/inf.ed.ac.uk/user/s17/s1785140/mscproject/small_data_for_testing/AVEC2012
 # VOICE_NAME=emotionbaseline
+
+# ALL DATA
+AVEC2012_DIR=/group/project/disnv/AVEC2012
+VOICE_NAME=emotionbaseline_alldata_lstm
 
 
 ##############################
@@ -45,16 +49,17 @@ if [ $1 == "synth" ]; then synth=true; fi
 if [ $1 == "buildvoice" ]; then prepdata=true; traindnn=true; fi
 if [ $1 == "all" ]; then prepdata=true; traindnn=true; synth=true; fi
 
-#prep data, labels, and alignments using festival and HTK
-if [ "$prepdata" = true ]; then
-  ./prepdata.sh $BUILD_YOUR_OWN_VOICE_DIR $MSCPROJECT_DIR $SCRATCH_DIR $AVEC2012_DIR $VOICE_NAME
-fi
+# #prep data, labels, and alignments using festival and HTK
+# if [ "$prepdata" = true ]; then
+#   ./prepdata.sh $BUILD_YOUR_OWN_VOICE_DIR $MSCPROJECT_DIR $SCRATCH_DIR $AVEC2012_DIR $VOICE_NAME
+# fi
 
 #train DNN models
 if [ "$traindnn" = true ]; then
   ./traindnn.sh $BUILD_YOUR_OWN_VOICE_DIR $VOICE_NAME
 fi
 
+echo "here"
 #use trained models to synthesise speech
 if [ "$synth" = true ]; then
   ./synthesise.sh $BUILD_YOUR_OWN_VOICE_DIR $MSCPROJECT_DIR $VOICE_NAME $SPEAKER_ID_TO_GENERATE $AROUSAL $EXPECTANCY $POWER $VALENCE

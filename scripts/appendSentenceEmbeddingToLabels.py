@@ -26,6 +26,12 @@ for testing
 python appendSentenceEmbeddingToLabels.py /group/project/cstr1/mscslp/2017-18/s1785140_Jason_Fong/merlin/egs/tokenprojection/s1/experiments/tokenprojection/acoustic_model/data/label_state_align /afs/inf.ed.ac.uk/user/s17/s1785140/mscproject/projection_weights_backup/tokenprojection/projection_weights_acoustic_model/proj_INFERENCE_epoch_23
 '''
 
+'''
+for all data
+
+python appendSentenceEmbeddingToLabels.py /afs/inf.ed.ac.uk/user/s17/s1785140/mscproject/leslie_label_state_align/all_data/label_state_align /afs/inf.ed.ac.uk/user/s17/s1785140/mscproject/projection_weights_backup/tokenprojection_alldata/projection_weights_acoustic_model/projection_weights/proj_INFERENCE_epoch_25
+'''
+
 label_state_align_folder = sys.argv[1]
 projection_weights_file = sys.argv[2]
 
@@ -59,8 +65,8 @@ for path in paths:
     to_append = []
     for i, dim in enumerate(sentence_embedding, 1):
         #check for scientific notation
-        assert 'e' not in str(dim)
-        feat = '/DIM' + str(i) + ':' + str(dim)
+        assert 'e' not in '{:.10f}'.format(dim), '{:.10f}'.format(dim) + 'has scientific notation'
+        feat = '/DIM' + str(i) + ':' + '{:.10f}'.format(dim)
         to_append.append(feat)
     to_append = ''.join(to_append)
 

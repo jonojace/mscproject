@@ -7,10 +7,25 @@ MSCPROJECT_DIR=/afs/inf.ed.ac.uk/user/s17/s1785140/mscproject
 # SCRATCH_DIR=/afs/inf.ed.ac.uk/group/msc-projects/s1785140 #this directory can max hold 20 gigs
 SCRATCH_DIR=/group/project/cstr1/mscslp/2017-18/s1785140_Jason_Fong/data_for_tokenprojection #perhaps use this place has TBs!, but its not backed up!
 
+
+
+
+
+
 #NB All the data!!!!
 AVEC2012_DIR=/group/project/disnv/AVEC2012
 LESLIE_DATA=/afs/inf.ed.ac.uk/group/cstr/projects/blizzard_entries/blizzard2017/parametric_synthesis/benchmark-merlin-data
 VOICE_NAME=tokenprojection_alldata
+
+#NB All the data!!! on other computers
+# AVEC2012_DIR=/group/project/disnv/AVEC2012
+# LESLIE_DATA=/afs/inf.ed.ac.uk/group/cstr/projects/blizzard_entries/blizzard2017/parametric_synthesis/benchmark-merlin-data
+# VOICE_NAME=tokenprojection_studentcompute
+
+
+
+
+
 
 # #NB use below for testing as smaller amount of data
 # AVEC2012_DIR=/afs/inf.ed.ac.uk/user/s17/s1785140/mscproject/small_data_for_testing/AVEC2012
@@ -46,17 +61,17 @@ if [ $1 == "synth" ]; then synth=true; fi
 if [ $1 == "buildvoice" ]; then prepdata=true; traindnn=true; fi
 if [ $1 == "all" ]; then prepdata=true; traindnn=true; synth=true; fi
 
-#prep data, labels, and alignments using festival and HTK
-if [ "$prepdata" = true ]; then
-  ./prepdata_tp.sh $BUILD_YOUR_OWN_VOICE_DIR $MSCPROJECT_DIR $SCRATCH_DIR $AVEC2012_DIR $VOICE_NAME $LESLIE_DATA
-fi
-
-#train DNN models
-if [ "$traindnn" = true ]; then
-  ./traindnn_tp.sh $BUILD_YOUR_OWN_VOICE_DIR $VOICE_NAME
-fi
+# #prep data, labels, and alignments using festival and HTK
+# if [ "$prepdata" = true ]; then
+#   ./prepdata_tp.sh $BUILD_YOUR_OWN_VOICE_DIR $MSCPROJECT_DIR $SCRATCH_DIR $AVEC2012_DIR $VOICE_NAME $LESLIE_DATA
+# fi
+#
+# #train DNN models
+# if [ "$traindnn" = true ]; then
+#   ./traindnn_tp.sh $BUILD_YOUR_OWN_VOICE_DIR $VOICE_NAME
+# fi
 
 #use trained models to synthesise speech
 if [ "$synth" = true ]; then
-  ./synthesise_tp.sh $BUILD_YOUR_OWN_VOICE_DIR $MSCPROJECT_DIR $VOICE_NAME $SPEAKER_ID_TO_GENERATE $AROUSAL $EXPECTANCY $POWER $VALENCE
+  ./synthesise_tp.sh $BUILD_YOUR_OWN_VOICE_DIR $MSCPROJECT_DIR $VOICE_NAME
 fi

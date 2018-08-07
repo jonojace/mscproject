@@ -1,0 +1,74 @@
+sox WARN dither: dither clipped 1 samples; decrease volume?
+sox WARN dither: dither clipped 2 samples; decrease volume?
+sox WARN dither: dither clipped 20 samples; decrease volume?
+sox WARN dither: dither clipped 4 samples; decrease volume?
+sox WARN dither: dither clipped 1 samples; decrease volume?
+sox WARN dither: dither clipped 1 samples; decrease volume?
+sox WARN dither: dither clipped 1 samples; decrease volume?
+sox WARN dither: dither clipped 3 samples; decrease volume?
+sox WARN dither: dither clipped 2 samples; decrease volume?
+sox WARN dither: dither clipped 3 samples; decrease volume?
+sox WARN dither: dither clipped 2 samples; decrease volume?
+sox WARN dither: dither clipped 3 samples; decrease volume?
+sox WARN dither: dither clipped 2 samples; decrease volume?
+sox WARN dither: dither clipped 1 samples; decrease volume?
+sox WARN dither: dither clipped 3 samples; decrease volume?
+sox WARN dither: dither clipped 1 samples; decrease volume?
+sox WARN dither: dither clipped 3 samples; decrease volume?
+sox WARN dither: dither clipped 13 samples; decrease volume?
+sox WARN dither: dither clipped 6 samples; decrease volume?
+sox WARN dither: dither clipped 1 samples; decrease volume?
+sox WARN dither: dither clipped 2 samples; decrease volume?
+sox WARN dither: dither clipped 4 samples; decrease volume?
+sox WARN dither: dither clipped 5 samples; decrease volume?
+sox WARN dither: dither clipped 7 samples; decrease volume?
+sox WARN dither: dither clipped 30 samples; decrease volume?
+sox WARN dither: dither clipped 22 samples; decrease volume?
+sox WARN dither: dither clipped 2 samples; decrease volume?
+sox WARN dither: dither clipped 25 samples; decrease volume?
+sox WARN dither: dither clipped 3 samples; decrease volume?
+sox WARN dither: dither clipped 6 samples; decrease volume?
+sox WARN dither: dither clipped 23 samples; decrease volume?
+sox WARN dither: dither clipped 3 samples; decrease volume?
+sox WARN dither: dither clipped 12 samples; decrease volume?
+sox WARN dither: dither clipped 9 samples; decrease volume?
+sox WARN dither: dither clipped 15 samples; decrease volume?
+sox WARN dither: dither clipped 12 samples; decrease volume?
+sox WARN dither: dither clipped 17 samples; decrease volume?
+sox WARN dither: dither clipped 3 samples; decrease volume?
+sox WARN dither: dither clipped 5 samples; decrease volume?
+sox WARN dither: dither clipped 2 samples; decrease volume?
+sox WARN dither: dither clipped 1 samples; decrease volume?
+sox WARN dither: dither clipped 5 samples; decrease volume?
+sox WARN dither: dither clipped 3 samples; decrease volume?
+sox WARN dither: dither clipped 1 samples; decrease volume?
+sox WARN dither: dither clipped 2 samples; decrease volume?
+sox WARN dither: dither clipped 9 samples; decrease volume?
+sox WARN dither: dither clipped 1 samples; decrease volume?
+sox WARN dither: dither clipped 4 samples; decrease volume?
+sox WARN dither: dither clipped 1 samples; decrease volume?
+Traceback (most recent call last):
+  File "/group/project/cstr1/mscslp/2017-18/s1785140_Jason_Fong/merlin/misc/scripts/frontend/utils/genScmFile.py", line 61, in <module>
+    utt_text   = create_dictionary_from_txt_dir(in_txt_dir)
+  File "/group/project/cstr1/mscslp/2017-18/s1785140_Jason_Fong/merlin/misc/scripts/frontend/utils/genScmFile.py", line 22, in create_dictionary_from_txt_dir
+    text = readtext(textfile)
+  File "/group/project/cstr1/mscslp/2017-18/s1785140_Jason_Fong/merlin/misc/scripts/frontend/utils/genScmFile.py", line 6, in readtext
+    data = f.read()
+  File "/afs/inf.ed.ac.uk/user/s17/s1785140/miniconda3/envs/msc/lib/python3.6/encodings/ascii.py", line 26, in decode
+    return codecs.ascii_decode(input, self.errors)[0]
+UnicodeDecodeError: 'ascii' codec can't decode byte 0xe2 in position 50: ordinal not in range(128)
+SIOD ERROR: could not open file database/labels/train_sentences.scm
+gawk: fatal: cannot open file `database/labels/prompt-lab/tmp' for reading (No such file or directory)
+gawk: fatal: cannot open file `database/labels/prompt-lab/tmp' for reading (No such file or directory)
+Traceback (most recent call last):
+  File "/group/project/cstr1/mscslp/2017-18/s1785140_Jason_Fong/merlin/misc/scripts/frontend/utils/normalize_lab_for_merlin.py", line 127, in <module>
+    in_f = open(file_id_list,'r')
+FileNotFoundError: [Errno 2] No such file or directory: 'database/labels/file_id_list.scp'
+Traceback (most recent call last):
+  File "/group/project/cstr1/mscslp/2017-18/s1785140_Jason_Fong/merlin/misc/scripts/alignment/state_align/forced_alignment.py", line 424, in <module>
+    aligner.prepare_training(file_id_list_name, wav_dir, lab_dir, work_dir, multiple_speaker)
+  File "/group/project/cstr1/mscslp/2017-18/s1785140_Jason_Fong/merlin/misc/scripts/alignment/state_align/forced_alignment.py", line 250, in prepare_training
+    file_id_list = self._read_file_list(file_id_list_name)
+  File "/group/project/cstr1/mscslp/2017-18/s1785140_Jason_Fong/merlin/misc/scripts/alignment/state_align/forced_alignment.py", line 92, in _read_file_list
+    fid = open(file_name)
+FileNotFoundError: [Errno 2] No such file or directory: '/group/project/cstr1/mscslp/2017-18/s1785140_Jason_Fong/merlin/egs/tokenprojection_studentcompute/s1/database/labels/file_id_list.scp'

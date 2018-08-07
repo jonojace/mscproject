@@ -33,7 +33,7 @@ sent_embedding_file = sys.argv[2]
 #load the sent embedding file in
 with open(sent_embedding_file) as f:
     line = f.readline()  #just get one line as the file only has one line
-sent_embedding = [float(string) for string in line.split()]
+sent_embedding = ['{:.15f}'.format(float(string)) for string in line.split()]
 
 #NB HARDCODED
 #check that we have 10 dimensions

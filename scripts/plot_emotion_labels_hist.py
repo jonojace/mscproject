@@ -37,7 +37,7 @@ def plot_hist(emotion, subplot):
     mean = np.mean(data[emotion])
     upper = mean + 2*std
     lower = mean - 2*std
-    print(emotion, 'lower bound is', lower, 'upper is', upper)
+    print(emotion, 'mean is', mean, 'lower bound is', lower, 'upper is', upper)
     subplot.axvline(mean, color='k', linestyle='dashed', linewidth=1) #plot the mean as a line
     # subplot.axvspan(lower, upper, alpha=0.25, color='grey')
     subplot.set_title(emotion.title())
@@ -45,7 +45,7 @@ def plot_hist(emotion, subplot):
 # plot_hist(emotion, plt)
 
 # four axes returned as a 2D array, subplots
-f, axarr = plt.subplots(2, 5)
+f, axarr = plt.subplots(2, 2)
 plot_hist('arousal', axarr[0,0])
 plot_hist('expectancy', axarr[0,1])
 plot_hist('power', axarr[1,0])
@@ -62,7 +62,7 @@ plot_hist('valence', axarr[1,1])
 
 plt.tight_layout() #make sure that titles and axes don't overlap
 
-plt.savefig(OUT_DIR + 'emotion_analysis.png')
+plt.savefig(OUT_DIR + 'emotion_analysis.eps', format='eps')
 
 # #make histograms for each emotion in 4 subplots
 # plt.hist(data['arousal'], bins=50)
